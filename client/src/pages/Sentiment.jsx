@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from "recharts";
 import { useNavigate } from "react-router-dom";
 
 const Sentiment = () => {
-  const [text, setText] = useState("");
-  const [results, setResults] = useState(null);
-  const [accuracy, setAccuracy] = useState(null);
+  const [dataset, setDataset] = useState(null);
   const [image, setImage] = useState(null);
-  const [imageSentiment, setImageSentiment] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -17,29 +14,36 @@ const Sentiment = () => {
     }
   }, [navigate]);
 
-  const analyzeSentiment = async () => {
+  const analyzeDataset = async () => {
+    if (!dataset) {
+      alert("Please upload a dataset file.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", dataset);
+
     try {
-      const token = localStorage.getItem("token");
-      const response = await fetch("http://127.0.0.1:5000/analyze", {
+      const response = await fetch("http://127.0.0.1:5000/analyze_dataset", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ text }),
+        body: formData,
       });
 
       const data = await response.json();
-      setResults(data.sentiments);
-      setAccuracy({ VADER: 85, TextBlob: 78, "BERT Model": 92 });
+      if (!response.ok) {
+        throw new Error(data.error || "Dataset analysis failed");
+      }
+
+      navigate("/result", { state: { datasetResults: data } });
     } catch (error) {
-      console.error("Error analyzing sentiment:", error);
+      console.error("Error analyzing dataset:", error);
+      alert("Dataset analysis failed. Please check your file and try again.");
     }
   };
 
   const analyzeImageSentiment = async () => {
     if (!image) {
-      alert("Please upload an image first.");
+      alert("Please upload an image.");
       return;
     }
 
@@ -53,72 +57,87 @@ const Sentiment = () => {
       });
 
       const data = await response.json();
-      setImageSentiment(data.sentiment);
+      if (!response.ok) {
+        throw new Error(data.error || "Image analysis failed");
+      }
+
+      navigate("/result", { state: { imageSentiment: data } });
     } catch (error) {
       console.error("Error analyzing image sentiment:", error);
+      alert("Image sentiment analysis failed. Please try again.");
+    }
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    setImage(file);
+    if (file) {
+      setImagePreview(URL.createObjectURL(file));
     }
   };
 
   return (
-    <div className="p-6 max-w-2xl mx-auto">
-      <h1 className="text-3xl font-bold text-blue-600 mb-6">Sentiment Analysis</h1>
-
-      {/* Text Sentiment Analysis */}
-      <textarea
-        className="w-96 h-32 p-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 resize-none shadow-md"
-        placeholder="Enter your text here..."
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-      />
-
-      <button
-        className="mt-4 px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition duration-300 shadow-md"
-        onClick={analyzeSentiment}
-      >
-        Analyze Text
-      </button>
-
-      {/* Image Sentiment Analysis */}
-      <input
-        type="file"
-        accept="image/*"
-        className="mt-4"
-        onChange={(e) => setImage(e.target.files[0])}
-      />
-
-      <button
-        className="mt-4 px-6 py-2 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition duration-300 shadow-md"
-        onClick={analyzeImageSentiment}
-      >
-        Analyze Image
-      </button>
-
-      {results && (
-        <div className="mt-6">
-          <h2 className="text-lg font-semibold mb-2">Text Analysis Results</h2>
-          <ul className="mb-6">
-            {Object.entries(results).map(([model, sentiment]) => (
-              <li key={model} className="mb-1">{model}: <span className="font-medium">{sentiment}</span></li>
-            ))}
-          </ul>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={Object.keys(results).map(model => ({ name: model, Sentiment: results[model] === "Positive" ? 1 : results[model] === "Negative" ? -1 : 0 }))}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Bar dataKey="Sentiment" fill="#4A90E2" />
-            </BarChart>
-          </ResponsiveContainer>
+    <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto">
+        <div className="text-center mb-10">
+          <h1 className="text-4xl font-bold text-blue-700 mb-2">🧠 Sentiment Analysis</h1>
+          <p className="text-gray-600">Upload text datasets or images to analyze emotions and sentiments using AI.</p>
         </div>
-      )}
 
-      {imageSentiment && (
-        <div className="mt-6">
-          <h2 className="text-lg font-semibold">Image Sentiment</h2>
-          <p className="text-xl">{imageSentiment}</p>
+        {/* Dataset Card */}
+        <div className="bg-white shadow-xl rounded-2xl p-6 mb-10">
+          <h2 className="text-2xl font-semibold text-purple-700 mb-2">📄 Upload Dataset</h2>
+          <p className="text-sm text-gray-600 mb-4">
+            Supported formats: <strong>.csv</strong>, <strong>.txt</strong>
+          </p>
+          <input
+            type="file"
+            accept=".csv,.txt"
+            className="mb-4 w-full"
+            onChange={(e) => setDataset(e.target.files[0])}
+          />
+          <button
+            onClick={analyzeDataset}
+            className="w-full py-2 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-lg transition"
+          >
+            Analyze Dataset
+          </button>
         </div>
-      )}
+
+        {/* Image Card */}
+        <div className="bg-white shadow-xl rounded-2xl p-6">
+          <h2 className="text-2xl font-semibold text-green-700 mb-2">🖼️ Upload Image</h2>
+          <p className="text-sm text-gray-600 mb-4">
+            Upload a face image to analyze emotional sentiment.
+          </p>
+          <input
+            type="file"
+            accept="image/*"
+            className="mb-4 w-full"
+            onChange={handleImageChange}
+          />
+          {imagePreview && (
+            <div className="mb-4">
+              <img
+                src={imagePreview}
+                alt="Preview"
+                className="w-32 h-32 object-cover rounded-lg border mx-auto"
+              />
+            </div>
+          )}
+          <button
+            onClick={analyzeImageSentiment}
+            className="w-full py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition"
+          >
+            Analyze Image
+          </button>
+        </div>
+
+        {/* Note */}
+        <p className="mt-8 text-xs text-center text-gray-500">
+          ⚠️ For best results, upload high-quality content with clear context or facial expressions.
+        </p>
+      </div>
     </div>
   );
 };

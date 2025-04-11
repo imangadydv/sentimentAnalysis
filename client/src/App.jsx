@@ -8,6 +8,7 @@ import Sentiment from "./pages/Sentiment";
 import Profile from "./pages/Profile";
 import PostList from "./components/PostList";
 import CreatePost from "./components/CreatePost";
+import Result from "./pages/Result";
 
 
 function App() {
@@ -22,7 +23,7 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/posts" element={<PostList />} />
         <Route path="/create-post" element={<CreatePost />} />
-    
+        <Route path="/result" element={<Result />} />
       </Routes>
       <Footer />
     </Router>
