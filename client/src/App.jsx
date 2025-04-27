@@ -9,6 +9,7 @@ import Profile from "./pages/Profile";
 import PostList from "./components/PostList";
 import CreatePost from "./components/CreatePost";
 import Result from "./pages/Result";
+import RealTimeSentiment from "./pages/RealTimeSentiment";
 
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
         <Route path="/posts" element={<PostList />} />
         <Route path="/create-post" element={<CreatePost />} />
         <Route path="/result" element={<Result />} />
+        <Route path="/realtime-detection" element={<RealTimeSentiment />} />
       </Routes>
       <Footer />
     </Router>

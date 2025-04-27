@@ -8,7 +8,8 @@ const User = require("./model/userModel.js");
 const userRoute = require("./routes/user.js")
 const postRoutes = require("./routes/post.js");
 const storyRoutes = require("./routes/story.js")
-
+const analyzeRoute = require("./routes/analyze.js");
+const path = require("path");
 dotenv.config();
 
 const app = express();
@@ -16,10 +17,11 @@ const app = express();
 // Middleware
 app.use(express.json());
 app.use(cors());
-
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use('/api',userRoute);
 app.use('/api',postRoutes);
 app.use('/api',storyRoutes);
+app.use('/api', analyzeRoute);
 
 // MongoDB Connection
 const connectDB = async () => {

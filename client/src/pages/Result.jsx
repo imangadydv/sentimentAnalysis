@@ -64,7 +64,7 @@ const Result = () => {
   }));
 
   return (
-    <div className="p-6 max-w-6xl mx-auto">
+    <div className="p-6 max-w-6xl bg-gradient-to-br from-blue-200 to-purple-200 mx-auto">
       <h1 className="text-3xl font-bold text-blue-600 mb-6">Analysis Results</h1>
 
       {datasetResults.length > 0 && (

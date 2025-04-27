@@ -3,6 +3,15 @@ from flask_cors import CORS
 from model import analyze_sentiment, analyze_image_sentiment
 import pandas as pd
 import os
+from flask import request
+import base64
+from PIL import Image
+from io import BytesIO
+from detection import detect_emotion
+from deepface import DeepFace
+import cv2
+import numpy as np
+import base64
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
@@ -42,6 +51,21 @@ def analyze_image():
     result = analyze_image_sentiment(image_path)
 
     return jsonify(result), 200
+@app.route('/start-detecting', methods=['POST'])
+def detect_sentiment():
+    try:
+        data = request.get_json()
+        image_data = data['image'].split(',')[1]
+        img_bytes = base64.b64decode(image_data)
+        np_img = np.frombuffer(img_bytes, np.uint8)
+        frame = cv2.imdecode(np_img, cv2.IMREAD_COLOR)
+
+        result = DeepFace.analyze(frame, actions=['emotion'], enforce_detection=False)
+        emotion = result[0]['dominant_emotion']
+        return jsonify({"emotion": emotion})
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 @app.route('/analyze_dataset', methods=['POST'])
@@ -119,6 +143,11 @@ def analyze_dataset():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
+
+
+
 
 
 if __name__ == "__main__":

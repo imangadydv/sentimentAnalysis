@@ -13,7 +13,7 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 to-purple-500 text-white p-6">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-200 to-purple-200 text-white p-6">
       <motion.h1
         className="text-4xl md:text-5xl font-bold text-center mb-4"
         initial={{ opacity: 0, y: -50 }}
