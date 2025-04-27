@@ -9,7 +9,7 @@ const CreatePost = () => {
     const token = localStorage.getItem("token");
 
     try {
-      const response = await fetch("http://localhost:5000/api/posts", {
+      const response = await fetch("https://sentimentanalysis-backend-bgrf.onrender.com/api/posts", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
