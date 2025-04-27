@@ -20,7 +20,7 @@ const Sentiment = () => {
     formData.append("file", dataset);
 
     try {
-      const response = await fetch("http://127.0.0.1:5000/analyze_dataset", {
+      const response = await fetch("https://sentimentanalysis-ml.onrender.com/analyze_dataset", {
         method: "POST",
         body: formData,
       });
@@ -39,7 +39,7 @@ const Sentiment = () => {
     formData.append("image", image);
 
     try {
-      const response = await fetch("http://127.0.0.1:5000/analyze-image", {
+      const response = await fetch("https://sentimentanalysis-ml.onrender.com/analyze-image", {
         method: "POST",
         body: formData,
       });
