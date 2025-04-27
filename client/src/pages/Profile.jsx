@@ -14,14 +14,14 @@ const Profile = () => {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await fetch("http://localhost:5000/api/profile", {
+        const response = await fetch("https://sentimentanalysis-backend-bgrf.onrender.com/api/profile", {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await response.json();
         if (response.ok) {
           const postsWithState = data.stories?.map((story) => ({
             ...story,
-            imageUrl: story.image ? `http://localhost:5000${story.image}` : "",
+            imageUrl: story.image ? `https://sentimentanalysis-backend-bgrf.onrender.com${story.image}` : "",
             liked: false,
             likeCount: story.likeCount || 0,
             comments: [],
@@ -51,7 +51,7 @@ const Profile = () => {
       formData.append("caption", caption);
       if (image) formData.append("image", image);
 
-      const response = await fetch("http://localhost:5000/api/analyze-post", {
+      const response = await fetch("https://sentimentanalysis-backend-bgrf.onrender.com/api/analyze-post", {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
         body: formData,
@@ -61,7 +61,7 @@ const Profile = () => {
       console.log("Response from analyze-post:", data);
 
       if (response.ok) {
-        const imageUrl = data?.data?.image ? `http://localhost:5000${data.data.image}` : "";
+        const imageUrl = data?.data?.image ? `https://sentimentanalysis-backend-bgrf.onrender.com${data.data.image}` : "";
         console.log("Returned imageUrl from backend:", imageUrl);
 
         const newPost = {
