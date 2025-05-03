@@ -36,8 +36,16 @@ const Sentiment = () => {
   const analyzeImageSentiment = async () => {
     if (!image) return alert("Please upload an image.");
     const formData = new FormData();
-    formData.append("image", image);
-
+  
+    // Force a fresh File object (helps with MIME issues)
+    const imageFile = new File([image], image.name, { type: image.type });
+    formData.append("image", imageFile);
+  
+    // Debug log to confirm everything is being sent
+    for (let [key, value] of formData.entries()) {
+      console.log("FormData entry:", key, value);
+    }
+  
     try {
       const response = await fetch("https://sentimentanalysis-ml.onrender.com/analyze-image", {
         method: "POST",
@@ -51,6 +59,7 @@ const Sentiment = () => {
       alert("Image analysis failed.");
     }
   };
+  
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];

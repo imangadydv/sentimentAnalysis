@@ -47,7 +47,7 @@ def analyze_image():
     image = request.files["image"]
     image_path = os.path.join(UPLOAD_FOLDER, image.filename)
     image.save(image_path)
-
+   
     result = analyze_image_sentiment(image_path)
 
     return jsonify(result), 200
