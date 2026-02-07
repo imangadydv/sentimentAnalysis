@@ -1,0 +1,5 @@
+.deepface/
+__pycache__/
+*.pyc
+venv/
+.env

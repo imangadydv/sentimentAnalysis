@@ -1,0 +1,85 @@
+@import "tailwindcss";
+
+:root {
+  --color-surface: #faf9f7;
+  --color-surface-elevated: #ffffff;
+  --color-border: #e8e6e3;
+  --color-text: #1c1917;
+  --color-text-muted: #57534e;
+  --color-primary: #4338ca;
+  --color-primary-hover: #3730a3;
+  --color-accent: #0d9488;
+  --color-accent-hover: #0f766e;
+  --color-nav: #1e1b4b;
+  --font-sans: "Plus Jakarta Sans", system-ui, sans-serif;
+  --shadow-sm: 0 1px 2px rgba(28, 25, 23, 0.06);
+  --shadow-md: 0 4px 12px rgba(28, 25, 23, 0.08);
+  --shadow-lg: 0 12px 40px rgba(28, 25, 23, 0.1);
+  --radius: 0.75rem;
+  --radius-lg: 1rem;
+}
+
+[data-theme="dark"] {
+  --color-surface: #1c1917;
+  --color-surface-elevated: #292524;
+  --color-border: #44403c;
+  --color-text: #fafaf9;
+  --color-text-muted: #a8a29e;
+  --color-primary: #6366f1;
+  --color-primary-hover: #818cf8;
+  --color-accent: #14b8a6;
+  --color-accent-hover: #2dd4bf;
+  --color-nav: #0f0d0b;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
